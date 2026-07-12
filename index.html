@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaperLesson — 精读课程网站</title>
+  <meta name="description" content="精读导向的个人课程网站，逐篇拆解经典论文与教材">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/theme.css">
+  <style>
+    /* ===== Hero ===== */
+    .hero {
+      text-align: center;
+      padding: var(--space-20) 0 var(--space-12);
+    }
+    .hero h1 {
+      font-size: var(--text-5xl);
+      margin-bottom: var(--space-4);
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero p {
+      font-size: var(--text-lg);
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto var(--space-8);
+    }
+
+    /* ===== Stats ===== */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      padding: var(--space-6) 0;
+      margin-bottom: var(--space-8);
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-family: var(--font-heading);
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+      margin-top: var(--space-1);
+    }
+
+    /* ===== 分馆 Tabs / Groups ===== */
+    .group-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-8);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .group-tab {
+      padding: var(--space-3) var(--space-6);
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-size: var(--text-base);
+      color: var(--gray-500);
+      background: none;
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+    .group-tab:hover { color: var(--accent); background: var(--accent-dim); }
+    .group-tab.active {
+      color: var(--ink);
+      background: var(--white);
+      border-color: var(--border);
+      font-weight: 600;
+    }
+
+    /* ===== Collection 卡片 ===== */
+    .collection {
+      display: none;
+      margin-bottom: var(--space-8);
+    }
+    .collection.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .collection-header {
+      margin-bottom: var(--space-6);
+    }
+    .collection-header h2 {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-1);
+    }
+    .collection-meta {
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .collection-meta .tag {
+      display: inline-block;
+      padding: 0.1em 0.5em;
+      background: var(--accent-dim);
+      color: var(--accent-deep);
+      border-radius: var(--radius-full);
+      font-size: 0.85em;
+    }
+    .collection-desc {
+      margin-top: var(--space-2);
+      color: var(--gray-600);
+      font-size: var(--text-sm);
+    }
+
+    /* ===== Lesson 卡片 ===== */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .lesson-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-decoration: none;
+      color: inherit;
+      transition: all var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+    }
+    .lesson-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      border-color: var(--accent-light);
+    }
+
+    .lesson-card .card-num {
+      font-size: var(--text-xs);
+      color: var(--gray-400);
+      font-family: var(--font-mono);
+      margin-bottom: var(--space-1);
+    }
+    .lesson-card h3 {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-1);
+    }
+    .lesson-card .card-subtitle {
+      font-size: var(--text-sm);
+      color: var(--gray-500);
+      margin-bottom: var(--space-3);
+    }
+    .lesson-card .card-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--text-xs);
+      color: var(--gray-400);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--gray-100);
+    }
+    .lesson-card .card-footer .card-tags {
+      display: flex;
+      gap: var(--space-1);
+      flex-wrap: wrap;
+    }
+    .lesson-card .card-footer .card-tags span {
+      padding: 0.1em 0.4em;
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+    }
+
+    /* ===== Empty State ===== */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-12) 0;
+      color: var(--gray-400);
+    }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: var(--space-4); }
+    .empty-state p { font-size: var(--text-sm); }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: var(--text-3xl); }
+      .stats { gap: var(--space-6); }
+      .group-tabs { overflow-x: auto; }
+      .group-tab { padding: var(--space-2) var(--space-4); white-space: nowrap; }
+      .lesson-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== 导航栏 ===== -->
+  <nav class="nav">
+    <div class="container">
+      <a href="./" class="nav-brand">📖 PaperLesson</a>
+      <ul class="nav-links">
+        <li><a href="#catalog">课程目录</a></li>
+        <li><a href="MISSION.md" target="_blank">关于</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="container">
+      <h1>📖 <span class="accent">Paper</span>Lesson</h1>
+      <p>精读每一篇论文，吃透每一本教材 —— 逐节拆解、公式解读、代码验证、练习巩固</p>
+    </div>
+  </section>
+
+  <!-- ===== 统计区 ===== -->
+  <section class="container">
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <!-- ===== 课程目录 ===== -->
+  <section class="container" id="catalog">
+    <!-- 分馆 Tab -->
+    <div class="group-tabs" id="groupTabs"></div>
+
+    <!-- 分馆内容 -->
+    <div id="catalogContent"></div>
+  </section>
+
+  <!-- ===== 页脚 ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>PaperLesson · 精读课程网站 · Built with ❤️</p>
+    </div>
+  </footer>
+
+  <!-- ===== 数据源 ===== -->
+  <script src="data/course-catalog.js"></script>
+
+  <!-- ===== 渲染逻辑 ===== -->
+  <script>
+  (function() {
+    'use strict';
+
+    // ---------- 获取数据 ----------
+    function getData() {
+      return COURSE_CATALOG || [];
+    }
+
+    // ---------- 渲染统计 ----------
+    function buildStats(groups) {
+      let totalLessons = 0;
+      let totalCollections = 0;
+      const durationMap = { '10min': 10, '15min': 15, '20min': 20, '30min': 30, '45min': 45, '60min': 60 };
+
+      groups.forEach(group => {
+        group.collections.forEach(col => {
+          totalCollections++;
+          totalLessons += col.lessons.length;
+        });
+      });
+
+      const totalDuration = groups.reduce((sum, group) => {
+        return sum + group.collections.reduce((s, col) => {
+          return s + col.lessons.reduce((ss, lesson) => {
+            return ss + (durationMap[lesson.duration] || 15);
+          }, 0);
+        }, 0);
+      }, 0);
+
+      const hours = Math.floor(totalDuration / 60);
+      const mins = totalDuration % 60;
+
+      const statsEl = document.getElementById('stats');
+      statsEl.innerHTML = `
+        <div class="stat-item">
+          <div class="stat-number">${groups.length}</div>
+          <div class="stat-label">📂 分馆</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">${totalCollections}</div>
+          <div class="stat-label">📄 来源</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">${totalLessons}</div>
+          <div class="stat-label">📖 课程</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">${hours > 0 ? hours + 'h' : ''}${mins}min</div>
+          <div class="stat-label">⏱ 总时长</div>
+        </div>
+      `;
+    }
+
+    // ---------- 渲染 Tab ----------
+    function renderTabs(groups) {
+      const tabsEl = document.getElementById('groupTabs');
+      tabsEl.innerHTML = groups.map((group, i) =>
+        `<button class="group-tab ${i === 0 ? 'active' : ''}" data-index="${i}">
+          ${group.icon || '📂'} ${group.title}
+        </button>`
+      ).join('');
+    }
+
+    // ---------- 渲染 Collection & Lessons ----------
+    function renderCatalog(groups) {
+      const contentEl = document.getElementById('catalogContent');
+      contentEl.innerHTML = groups.map((group, gi) => {
+        const collectionsHtml = group.collections.map(col => {
+          const lessonsHtml = col.lessons.length > 0
+            ? `<div class="lesson-grid">
+                ${col.lessons.map(lesson => `
+                  <a href="lessons/${lesson.filename}" class="lesson-card">
+                    <div class="card-num">${lesson.id}</div>
+                    <h3>${lesson.title}</h3>
+                    ${lesson.subtitle ? `<div class="card-subtitle">${lesson.subtitle}</div>` : ''}
+                    <div class="card-footer">
+                      <span>${lesson.duration || '?'} · ${lesson.difficulty || '通用'}</span>
+                      <div class="card-tags">
+                        ${(lesson.tags || []).map(t => `<span>${t}</span>`).join('')}
+                      </div>
+                    </div>
+                  </a>
+                `).join('')}
+              </div>`
+            : `<div class="empty-state">
+                <div class="empty-icon">📝</div>
+                <p>暂无课程，敬请期待</p>
+              </div>`;
+
+          return `
+            <div class="collection" data-group="${gi}">
+              <div class="collection-header">
+                <h2>${col.title}</h2>
+                <div class="collection-meta">
+                  ${col.authors ? `<span>✍️ ${col.authors}</span>` : ''}
+                  ${col.year ? `<span>📅 ${col.year}</span>` : ''}
+                  ${col.source ? `<span>📰 ${col.source}</span>` : ''}
+                  ${(col.tags || []).map(t => `<span class="tag">${t}</span>`).join('')}
+                </div>
+                ${col.description ? `<div class="collection-desc">${col.description}</div>` : ''}
+              </div>
+              ${lessonsHtml}
+            </div>
+          `;
+        }).join('');
+
+        return collectionsHtml;
+      }).join('');
+
+      // 默认显示第一个 group 的 collections
+      document.querySelectorAll('.collection').forEach(el => {
+        if (el.dataset.group === '0') el.classList.add('active');
+      });
+    }
+
+    // ---------- Tab 切换 ----------
+    function initTabs() {
+      document.getElementById('groupTabs').addEventListener('click', (e) => {
+        const tab = e.target.closest('.group-tab');
+        if (!tab) return;
+
+        document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const idx = parseInt(tab.dataset.index);
+        document.querySelectorAll('.collection').forEach(el => {
+          el.classList.toggle('active', parseInt(el.dataset.group) === idx);
+        });
+      });
+    }
+
+    // ---------- 初始化 ----------
+    function init() {
+      const groups = getData();
+      if (groups.length === 0) {
+        document.getElementById('stats').innerHTML = '<p style="text-align:center;color:var(--gray-400)">暂无数据</p>';
+        return;
+      }
+      buildStats(groups);
+      renderTabs(groups);
+      renderCatalog(groups);
+      initTabs();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+  </script>
+</body>
+</html>
