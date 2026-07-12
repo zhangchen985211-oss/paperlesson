@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例课程 — PaperLesson 精读</title>
+  <meta name="description" content="PaperLesson 示例课程，展示精读课程的标准结构">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/theme.css">
+  <link rel="stylesheet" href="assets/course.css">
+  <!-- MathJax v3 CDN：用于渲染 LaTeX 公式 -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+  <!-- ===== 导航占位 ===== -->
+  <nav class="nav">
+    <div class="container">
+      <a href="../" class="nav-brand">📖 PaperLesson</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">← 返回课程馆</a></li>
+        <li><a href="../MISSION.md" target="_blank">关于</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== 主内容 ===== -->
+  <main class="container" style="max-width: var(--content-width); padding-top: var(--space-8); padding-bottom: var(--space-12);">
+
+    <!-- ===== 返回链接 ===== -->
+    <a href="../index.html" class="back-link">← 返回课程馆</a>
+
+    <!-- ===== 课程头部 ===== -->
+    <!-- lesson-header：包含标题、编号、时长、难度等信息 -->
+    <header class="lesson-header">
+      <h1>示例课程：理解注意力机制</h1>
+      <p style="color: var(--gray-600); margin-top: var(--space-2);">
+        从直觉到公式，带你理解注意力机制（Attention Mechanism）的核心思想与数学表述
+      </p>
+      <div class="lesson-meta">
+        <span>📅 2024-01</span>
+        <span>⏱ 20min</span>
+        <span><span class="difficulty-badge beginner">入门</span></span>
+        <span>📄 3 节 · 3 练习</span>
+      </div>
+    </header>
+
+    <!-- =============================== -->
+    <!-- 第 1 节                          -->
+    <!-- lesson-section：一节课的一个逻辑单元 -->
+    <!-- =============================== -->
+    <section class="lesson-section">
+      <h2>1. 注意力是什么？</h2>
+
+      <!-- tip：提示框，有 info / warning / success 三种 -->
+      <div class="tip info">
+        <span class="tip-icon">💡</span>
+        <div>
+          <strong>本节目标</strong>：理解注意力机制的基本直觉，不需要数学公式。
+        </div>
+      </div>
+
+      <h3>一个类比</h3>
+      <p>
+        想象你在一个嘈杂的派对上和朋友聊天。尽管周围有很多人同时说话，你仍然能
+        <strong>聚焦</strong>在朋友的声音上，忽略其他噪音。这就是「注意力」——
+        从大量信息中<strong>选择性地关注</strong>最相关的部分。
+      </p>
+
+      <!-- concept-box：核心概念框 -->
+      <div class="concept-box">
+        <div class="label">💎 核心概念</div>
+        <p><strong>注意力机制</strong> 让模型在处理输入时，动态地决定「看哪里」和「看多少」，而不是均匀地处理所有信息。</p>
+      </div>
+
+      <h3>为什么需要注意力？</h3>
+      <p>在深度学习之前，序列模型主要靠 RNN/LSTM 逐步传递信息。但当序列很长时（比如一个 100 词的句子），早期信息会在传递中<strong>衰减</strong>，模型会「忘记」开头的内容。注意力机制解决了这个问题——它允许模型<strong>直接回头看</strong>任意位置的信息。</p>
+
+      <blockquote>
+        「Attention is all you need」—— 2017 年 Transformer 论文彻底改变了 NLP 领域，其核心就是自注意力（Self-Attention）机制。
+      </blockquote>
+    </section>
+
+    <!-- =============================== -->
+    <!-- 第 2 节                          -->
+    <!-- =============================== -->
+    <section class="lesson-section">
+      <h2>2. 数学表述</h2>
+
+      <div class="tip info">
+        <span class="tip-icon">🎯</span>
+        <div><strong>本节目标</strong>：理解注意力机制的数学公式。</div>
+      </div>
+
+      <h3>核心公式</h3>
+      <p>最常用的注意力形式是 <strong>Scaled Dot-Product Attention</strong>（缩放点积注意力）：</p>
+
+      <!-- formula-block：公式展示区 -->
+      <div class="formula-block">
+        \[
+        \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+        \]
+        <div class="formula-label">公式 1：缩放点积注意力</div>
+      </div>
+
+      <h3>符号说明</h3>
+      <p>这个公式中的三个矩阵扮演不同角色：</p>
+
+      <ul>
+        <li><strong>\(Q\) (Query — 查询)</strong>：当前关注的位置，相当于「我关心什么？」</li>
+        <li><strong>\(K\) (Key — 键)</strong>：所有位置的特征，相当于「你们是谁？」</li>
+        <li><strong>\(V\) (Value — 值)</strong>：每个位置携带的实际信息，相当于「你们有什么？」</li>
+      </ul>
+
+      <!-- comparison-table：比较表格 -->
+      <h4>三者的直观理解</h4>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>角色</th>
+            <th>类比</th>
+            <th>数学维度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Query (Q)</td>
+            <td>你在图书馆搜索时的问题</td>
+            <td>\(n_q \times d_k\)</td>
+          </tr>
+          <tr>
+            <td>Key (K)</td>
+            <td>书的目标索引标签</td>
+            <td>\(n_k \times d_k\)</td>
+          </tr>
+          <tr>
+            <td>Value (V)</td>
+            <td>书的内容</td>
+            <td>\(n_k \times d_v\)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>计算步骤</h3>
+      <p>缩放点积注意力的计算分为三步：</p>
+      <ol>
+        <li><strong>计算相似度</strong>：\(Q\) 与所有 \(K\) 做点积，得到注意力得分矩阵 \(QK^T\)</li>
+        <li><strong>缩放</strong>：除以 \(\sqrt{d_k}\) 防止点积过大导致 softmax 梯度消失</li>
+        <li><strong>加权求和</strong>：用 softmax 归一化的权重对 \(V\) 加权求和</li>
+      </ol>
+
+      <div class="formula-block">
+        \[
+        \text{score}_{ij} = \frac{Q_i \cdot K_j}{\sqrt{d_k}}, \quad
+        \alpha_{ij} = \frac{\exp(\text{score}_{ij})}{\sum_k \exp(\text{score}_{ik})}, \quad
+        \text{output}_i = \sum_j \alpha_{ij} V_j
+        \]
+        <div class="formula-label">公式 2：三步分解</div>
+      </div>
+
+      <div class="tip success">
+        <span class="tip-icon">✅</span>
+        <div>
+          <strong>关键理解</strong>：softmax 输出的权重 \(\alpha_{ij}\) 就是模型对位置 \(j\) 的「注意力分配」—— 权重越大，模型越关注那个位置。
+        </div>
+      </div>
+
+      <!-- code-block：带语言标注的代码块 -->
+      <div class="code-block">
+        <div class="code-header">
+          <span>Python</span>
+        </div>
+        <pre><code>import numpy as np
+
+def scaled_dot_product_attention(Q, K, V):
+    """
+    缩放点积注意力实现
+    Q: (..., seq_len_q, d_k)
+    K: (..., seq_len_k, d_k)
+    V: (..., seq_len_k, d_v)
+    """
+    d_k = Q.shape[-1]
+    scores = np.matmul(Q, K.transpose(0, 2, 1))  # (..., n_q, n_k)
+    scores = scores / np.sqrt(d_k)                # 缩放
+    weights = np.exp(scores) / np.sum(np.exp(scores), axis=-1, keepdims=True)
+    output = np.matmul(weights, V)
+    return output, weights</code></pre>
+      </div>
+    </section>
+
+    <!-- =============================== -->
+    <!-- 第 3 节                          -->
+    <!-- =============================== -->
+    <section class="lesson-section">
+      <h2>3. 多头的力量</h2>
+
+      <p>单一注意力头只能从一个「视角」看问题。多个注意力头可以让模型从不同角度同时关注信息：</p>
+
+      <div class="formula-block">
+        \[
+        \text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)W^O
+        \]
+        \[
+        \text{where } \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
+        \]
+        <div class="formula-label">公式 3：多头注意力</div>
+      </div>
+
+      <div class="concept-box">
+        <div class="label">💎 核心概念</div>
+        <p>多头注意力 = 让模型同时学习多种注意力模式。比如一个头关注语法关系，另一个头关注语义相似度。</p>
+      </div>
+
+      <!-- ===== 练习区域 ===== -->
+      <!-- details.quiz：折叠练习，summary 是题目，quiz-answer 是答案 -->
+      <details class="quiz">
+        <summary>为什么需要缩放因子 \(\sqrt{d_k}\)？</summary>
+        <div class="quiz-content">
+          <p>当 \(d_k\) 较大时，点积的数值会很大，导致 softmax 的梯度区域极小（梯度消失），训练困难。除以 \(\sqrt{d_k}\) 可以让方差保持为 1，使 softmax 梯度稳定。</p>
+          <div class="quiz-answer">
+            <strong>一句话</strong>：防止大维度下的梯度消失问题。
+          </div>
+        </div>
+      </details>
+
+      <details class="quiz">
+        <summary>Q 和 K 的维度为什么必须一致？</summary>
+        <div class="quiz-content">
+          <p>因为 \(Q\) 和 \(K\) 要做点积 \(Q \cdot K^T\)，矩阵乘法要求 \(Q\) 的最后一维等于 \(K\) 的最后一维。这个维度 \(d_k\) 就是「查询-键」的表示空间维度。</p>
+          <div class="quiz-answer">
+            <strong>一句话</strong>：点积运算要求维度匹配。
+          </div>
+        </div>
+      </details>
+
+      <details class="quiz">
+        <summary>如果我想让模型关注句子的语法结构，而不是具体词汇，应该怎么做？</summary>
+        <div class="quiz-content">
+          <p>可以通过位置编码（Positional Encoding）为每个位置添加位置向量，让注意力头可以关注「位置关系」而非「内容相似度」。不同注意力头可以学习不同的关注模式。</p>
+          <div class="quiz-answer">
+            <strong>一句话</strong>：位置编码 + 多头注意力 = 语法与语义兼顾。
+          </div>
+        </div>
+      </details>
+
+      <!-- ===== 开放思考题 ===== -->
+      <div class="tip warning">
+        <span class="tip-icon">🤔</span>
+        <div>
+          <strong>开放思考</strong>：注意力机制的计算复杂度是 \(O(n^2)\)（\(n\) 为序列长度）。对于 100 万词的文档，这不可行。你能想到什么优化思路？
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 底部导航 ===== -->
+    <!-- lesson-nav：前后课程导航 -->
+    <nav class="lesson-nav">
+      <a href="../index.html">← 返回课程馆</a>
+      <a href="../index.html" style="margin-left: auto;">📖 更多课程 →</a>
+    </nav>
+
+  </main>
+
+  <!-- ===== 页脚 ===== -->
+  <footer class="footer" style="margin-top: 0;">
+    <div class="container">
+      <p>PaperLesson · 精读课程网站</p>
+    </div>
+  </footer>
+
+  <!-- ===== 交互脚本 ===== -->
+  <script src="assets/course.js"></script>
+</body>
+</html>
